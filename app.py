@@ -123,11 +123,11 @@ mp_holistic = mp.solutions.holistic
 holistic = mp_holistic.Holistic(min_detection_confidence=0.7, min_tracking_confidence=0.7)
 
 # Load the trained CNN model
-model = tf.keras.models.load_model('sign_language_cnn_model150.h5')
+model = tf.keras.models.load_model('sign_language_cnn_model_word11150.h5')
 
 # Load the LabelEncoder used during training
 label_encoder = LabelEncoder()
-label_encoder.classes_ = np.load('classes150.npy')
+label_encoder.classes_ = np.load('classes11150.npy')
 
 # Define image size (same as during model training)
 IMG_SIZE = 64
