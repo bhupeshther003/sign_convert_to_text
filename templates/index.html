@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Language Conversion</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            padding-top: 20px;
+        }
+        .container {
+            max-width: 960px;
+        }
+        .video-container {
+            position: relative;
+            padding-top: 56.25%; /* 16:9 Aspect Ratio */
+        }
+        .video-container img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .card {
+            margin-bottom: 20px;
+        }
+    </style>
+    <script>
+        // Function to update the prediction text, sentence, and last sentence
+        function updateText() {
+            fetch('/current_prediction')
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('prediction').innerText = `Sign: ${data.prediction}`;
+                    document.getElementById('sentence').innerText = `Sentence making: ${data.sentence}`;
+                    document.getElementById('last_sentence').innerText = `Last sentence: ${data.last_sentence}`;
+                })
+                .catch(error => console.error('Error fetching prediction:', error));
+        }
+
+        // Poll the prediction endpoint every second
+        setInterval(updateText, 1000);
+
+        // Function to start the camera
+        function startCamera() {
+            fetch('/start_camera', { method: 'POST' })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.message === 'Camera started') {
+                        document.getElementById('videoFeed').src = "/video_feed";
+                        document.getElementById('videoFeed').style.display = 'block';
+                    }
+                })
+                .catch(error => console.error('Error starting camera:', error));
+        }
+
+        // Function to stop the camera
+        function stopCamera() {
+            fetch('/stop_camera', { method: 'POST' })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.message === 'Camera stopped') {
+                        document.getElementById('videoFeed').style.display = 'none';
+                        document.getElementById('videoFeed').src = "";
+                    }
+                })
+                .catch(error => console.error('Error stopping camera:', error));
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1 class="text-center mb-4">Sign Language Conversion</h1>
+        
+        <div class="card">
+            <div class="card-header">
+                <h2>Live Video Feed</h2>
+            </div>
+            <div class="card-body video-container">
+                <img src="" id="videoFeed" alt="Live Video Feed" style="display:none;">
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-header">
+                <h2>Real-Time Prediction</h2>
+                <p id="prediction">Sign: None</p>
+                <h2>Sentence Making</h2>
+                <p id="sentence">Sentence making: </p>
+                <h2>Last Sentence</h2>
+                <p id="last_sentence">Last sentence: </p>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-header">
+                <h2>Camera Controls</h2>
+            </div>
+            <div class="card-body text-center">
+                <button class="btn btn-primary" onclick="startCamera()">Start Camera</button>
+                <button class="btn btn-danger" onclick="stopCamera()">Stop Camera</button>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
